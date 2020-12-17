@@ -34,26 +34,27 @@ public class DefaultConverter implements TypeConverter {
 	public Object convertToJSONPrimitive(String text) {
         if(text == null) return text;
 		Object primitive = null;
-		// Attempt to convert to Integer
-		try {
-			primitive = enforce32BitInt ? Integer.valueOf(text) : Long.valueOf(text);
-		} catch (Exception e) {/**/}
-		// Attempt to convert to double
-		if (primitive == null) {
-			try {
-				Double v = Double.valueOf(text);
-                if( !v.isInfinite() && !v.isNaN() ) {
-                    primitive = v;
-                }
-                else {
-                    primitive = text;
-                }
-			} catch (Exception e) {/**/}
-		}
-		// Attempt to convert to boolean
-		if (primitive == null) {
-			if(text.trim().equalsIgnoreCase("true") || text.trim().equalsIgnoreCase("false")) {
-				primitive = Boolean.valueOf(text);
+
+   	   	if (!text.isEmpty() && Character.isDigit(text.charAt(0))) {
+   	   	   	// Attempt to convert to Integer
+   	   	   	try {
+				primitive = enforce32BitInt ? Integer.parseInt(text) : Long.parseLong(text);
+   	   	   	} catch (Exception e) {/**/}
+   	   	   	// Attempt to convert to double
+   	   	   	if (primitive == null) {
+   	   	   	   	try {
+   	   	   	   	   	double v = Double.parseDouble(text);
+   	   	   	   	   	if (!Double.isInfinite(v) && !Double.isNaN(v)) {
+   	   	   	   	   	   	primitive = v;
+   	   	   	   	   	} else {
+   	   	   	   	   	   	primitive = text;
+   	   	   	   	   	}
+   	   	   	   	} catch (Exception e) {/**/}
+   	   	   	}
+   	   	} else {
+   	   	   	// Attempt to convert to boolean
+   	   	   	if (text.trim().equalsIgnoreCase("true") || text.trim().equalsIgnoreCase("false")) {
+   	   	   	   	primitive = Boolean.valueOf(text);
 			}
 		}
 
